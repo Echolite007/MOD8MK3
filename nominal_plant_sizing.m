@@ -1,13 +1,13 @@
-function nominal_size = nominal_plant_sizing(p, ref)
+function nominal_size = nominal_plant_sizing(params, ref)
 
 %% Determine following parameters based on motor limits: 
 % Determine actuator arm length r_arm 
 % Determine inertia J 
 % Determine stiffness k 
 
-R   = p.actuator.R25_ohm;
-km  = p.actuator.Kf_N_per_A;     
-Umax = p.actuator.Umax_V;        
+R   = params.actuator.R25_ohm;
+km  = params.actuator.Kf_N_per_A;     
+Umax = params.actuator.Umax_V;        
 
 margin = 0.9;   % Safety margin 
 
@@ -30,9 +30,9 @@ wn   = sqrt(k_eq / J);
 zeta = d / (2 * sqrt(J * k_eq));  
 
 % Geometric stroke check (mirror angular range vs. VCM half-stroke):
-stroke_check_m = r_arm * p.spec.mirror_angle_max_rad;
-stroke_ok      = stroke_check_m <= p.actuator.stroke_half_m;
-offset_ok = (r_arm >= p.spec.mirror_offset_min_m) && (r_arm <= p.spec.mirror_offset_max_m);
+stroke_check_m = r_arm * params.spec.mirror_angle_max_rad;
+stroke_ok      = stroke_check_m <= params.actuator.stroke_half_m;
+offset_ok = (r_arm >= params.spec.mirror_offset_min_m) && (r_arm <= params.spec.mirror_offset_max_m);
 
 %% Voltage-budget verification 
 u_v = km * r_arm * dtheta_max;
@@ -49,15 +49,15 @@ nominal_size.wn_rad_s       = wn;
 nominal_size.margin         = margin;
 nominal_size.Umax_V         = Umax;
 nominal_size.stroke_check_m = stroke_check_m;
-nominal_size.stroke_half_m  = p.actuator.stroke_half_m;
+nominal_size.stroke_half_m  = params.actuator.stroke_half_m;
 nominal_size.stroke_ok      = stroke_ok;
 nominal_size.offset_ok      = offset_ok;
-nominal_size.mirror_offset_min_m = p.spec.mirror_offset_min_m;
-nominal_size.mirror_offset_max_m = p.spec.mirror_offset_max_m;
+nominal_size.mirror_offset_min_m = params.spec.mirror_offset_min_m;
+nominal_size.mirror_offset_max_m = params.spec.mirror_offset_max_m;
 nominal_size.u_req_check    = struct('u_v_V', u_v, 'u_J_V', u_J, 'u_k_V', u_k);
 
 fprintf('--- Deliverable b: nominal plant sizing ---\n');
-fprintf('Umax (continuous)   = %.4f V  (= Ic*R25 = %.3f A * %.2f Ohm)\n', Umax, p.actuator.Ic_A, R);
+fprintf('Umax (continuous)   = %.4f V  (= Ic*R25 = %.3f A * %.2f Ohm)\n', Umax, params.actuator.Ic_A, R);
 fprintf('margin               = %.2f\n', margin);
 fprintf('r_arm                = %.6g m  (%.3f mm)\n', r_arm, r_arm*1e3);
 fprintf('J                    = %.6g kg*m^2\n', J);
@@ -66,9 +66,9 @@ fprintf('d (back-EMF damping) = %.6g N*m*s/rad  (= km^2*r_arm^2/R, NOT zero/negl
 fprintf('zeta                 = %.6g\n', zeta);
 fprintf('wn                   = %.6g rad/s  (%.3f Hz)\n', wn, wn/(2*pi));
 fprintf('Stroke check: r_arm*theta_max = %.4f mm  vs  stroke_half = %.4f mm  -> %s\n', ...
-    stroke_check_m*1e3, p.actuator.stroke_half_m*1e3, ternary(stroke_ok,'OK','VIOLATED'));
+    stroke_check_m*1e3, params.actuator.stroke_half_m*1e3, ternary(stroke_ok,'OK','VIOLATED'));
 fprintf('Mirror-offset check: r_arm = %.2f mm  vs  allowed [%.0f, %.0f] mm  -> %s\n', ...
-    r_arm*1e3, p.spec.mirror_offset_min_m*1e3, p.spec.mirror_offset_max_m*1e3, ternary(offset_ok,'OK','VIOLATED (KNOWN ISSUE)'));
+    r_arm*1e3, params.spec.mirror_offset_min_m*1e3, params.spec.mirror_offset_max_m*1e3, ternary(offset_ok,'OK','VIOLATED (KNOWN ISSUE)'));
 if ~offset_ok
     fprintf(['  NOTE: r_arm is sized purely from the back-EMF voltage budget and does\n', ...
              '  not respect the 50-150 mm mechanism offset range. This is a known open\n', ...

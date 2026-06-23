@@ -4,3 +4,18 @@ clear; clc; close all
 addpath('spacar');
 addpath('spacar\spalight-1.38');
 
+% Load parameters 
+params = parameters(); 
+
+% Load reference 
+ref = reference(params.spec.driving_speed_nom_mps, params.spec.weeding_time_s, params.spec.return_time_s, 1e-4);
+
+% Nominal plant sizing - Deliverable b 
+nominal_plant_sizing = nominal_plant_sizing(params, ref);
+
+% Store nominal plant sizes in params structure under mech
+params.mech.r_arm_m       = nominal_plant_sizing.r_arm_m;
+params.mech.J_kgm2        = nominal_plant_sizing.J_kgm2;
+params.mech.k_Nm_per_rad  = nominal_plant_sizing.k_Nm_per_rad;
+params.mech.d_Nms_per_rad = nominal_plant_sizing.d_Nms_per_rad;
+

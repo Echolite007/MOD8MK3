@@ -41,7 +41,7 @@ actuator.m_coil_kg        = 36e-3;
 actuator.m_core_kg        = 95.6e-3;
 actuator.running_clearance_m = 0.6e-3;
 actuator.tau_e_from_LR_s  = actuator.Lcoil_H / actuator.R25_ohm;
-p.actuator = actuator;
+params.actuator = actuator;
 
 %% Amplifier — not yet specified
 amplifier = struct();
