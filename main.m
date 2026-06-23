@@ -30,10 +30,10 @@ P_nom = (params.mech.r_arm_m * params.actuator.Kf_N_per_A / params.actuator.R25_
 controller_design = controller_design(params, nominal_plant_sizing, ref);
 
 % Simulation output
-sim_out = simulation(params, nominal_plant_sizing, controller_design);
+spacar_sim_out = simulation(params, nominal_plant_sizing, controller_design);
 
 % Discretization 
-discretized_system = 
+discretized_system = discretisation(params, controller_design, spacar_sim_out);
 
 % Simulink parameters 
 ts = 5e-4;
