@@ -25,3 +25,16 @@ s_var = tf('s');
 % Nominal Continuous plant: Voltage to Mirror Angle 
 P_nom = (params.mech.r_arm_m * params.actuator.Kf_N_per_A / params.actuator.R25_ohm) / ...
     (params.mech.J_kgm2 * s_var^2 + params.mech.d_Nms_per_rad * s_var + params.mech.k_Nm_per_rad);
+
+% Controller design 
+controller_design = controller_design(params, nominal_plant_sizing, ref);
+
+% Simulation output
+sim_out = simulation(params, nominal_plant_sizing, controller_design);
+
+% Discretization 
+discretized_system = 
+
+% Simulink parameters 
+ts = 5e-4;
+r_sensor = 0.052;

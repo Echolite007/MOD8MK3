@@ -56,32 +56,32 @@ nominal_size.mirror_offset_min_m = params.spec.mirror_offset_min_m;
 nominal_size.mirror_offset_max_m = params.spec.mirror_offset_max_m;
 nominal_size.u_req_check    = struct('u_v_V', u_v, 'u_J_V', u_J, 'u_k_V', u_k);
 
-fprintf('--- Deliverable b: nominal plant sizing ---\n');
-fprintf('Umax (continuous)   = %.4f V  (= Ic*R25 = %.3f A * %.2f Ohm)\n', Umax, params.actuator.Ic_A, R);
-fprintf('margin               = %.2f\n', margin);
-fprintf('r_arm                = %.6g m  (%.3f mm)\n', r_arm, r_arm*1e3);
-fprintf('J                    = %.6g kg*m^2\n', J);
-fprintf('k_eq                 = %.6g N*m/rad\n', k_eq);
-fprintf('d (back-EMF damping) = %.6g N*m*s/rad  (= km^2*r_arm^2/R, NOT zero/neglected)\n', d);
-fprintf('zeta                 = %.6g\n', zeta);
-fprintf('wn                   = %.6g rad/s  (%.3f Hz)\n', wn, wn/(2*pi));
-fprintf('Stroke check: r_arm*theta_max = %.4f mm  vs  stroke_half = %.4f mm  -> %s\n', ...
-    stroke_check_m*1e3, params.actuator.stroke_half_m*1e3, ternary(stroke_ok,'OK','VIOLATED'));
-fprintf('Mirror-offset check: r_arm = %.2f mm  vs  allowed [%.0f, %.0f] mm  -> %s\n', ...
-    r_arm*1e3, params.spec.mirror_offset_min_m*1e3, params.spec.mirror_offset_max_m*1e3, ternary(offset_ok,'OK','VIOLATED (KNOWN ISSUE)'));
-if ~offset_ok
-    fprintf(['  NOTE: r_arm is sized purely from the back-EMF voltage budget and does\n', ...
-             '  not respect the 50-150 mm mechanism offset range. This is a known open\n', ...
-             '  conflict between the two constraints -- flag and discuss in the report\n', ...
-             '  rather than silently resolving it here.\n']);
-end
-fprintf('Voltage budget check (each should equal margin*Umax = %.4f V):\n', margin*Umax);
-fprintf('  velocity/back-EMF term : %.4f V\n', u_v);
-fprintf('  J (acceleration) term  : %.4f V\n', u_J);
-fprintf('  k_eq (position) term   : %.4f V\n', u_k);
-
-end
+% fprintf('--- Deliverable b: nominal plant sizing ---\n');
+% fprintf('Umax (continuous)   = %.4f V  (= Ic*R25 = %.3f A * %.2f Ohm)\n', Umax, params.actuator.Ic_A, R);
+% fprintf('margin               = %.2f\n', margin);
+% fprintf('r_arm                = %.6g m  (%.3f mm)\n', r_arm, r_arm*1e3);
+% fprintf('J                    = %.6g kg*m^2\n', J);
+% fprintf('k_eq                 = %.6g N*m/rad\n', k_eq);
+% fprintf('d (back-EMF damping) = %.6g N*m*s/rad  (= km^2*r_arm^2/R, NOT zero/neglected)\n', d);
+% fprintf('zeta                 = %.6g\n', zeta);
+% fprintf('wn                   = %.6g rad/s  (%.3f Hz)\n', wn, wn/(2*pi));
+% fprintf('Stroke check: r_arm*theta_max = %.4f mm  vs  stroke_half = %.4f mm  -> %s\n', ...
+%     stroke_check_m*1e3, params.actuator.stroke_half_m*1e3, ternary(stroke_ok,'OK','VIOLATED'));
+% fprintf('Mirror-offset check: r_arm = %.2f mm  vs  allowed [%.0f, %.0f] mm  -> %s\n', ...
+%     r_arm*1e3, params.spec.mirror_offset_min_m*1e3, params.spec.mirror_offset_max_m*1e3, ternary(offset_ok,'OK','VIOLATED (KNOWN ISSUE)'));
+% if ~offset_ok
+%     fprintf(['  NOTE: r_arm is sized purely from the back-EMF voltage budget and does\n', ...
+%              '  not respect the 50-150 mm mechanism offset range. This is a known open\n', ...
+%              '  conflict between the two constraints -- flag and discuss in the report\n', ...
+%              '  rather than silently resolving it here.\n']);
+% end
+% fprintf('Voltage budget check (each should equal margin*Umax = %.4f V):\n', margin*Umax);
+% fprintf('  velocity/back-EMF term : %.4f V\n', u_v);
+% fprintf('  J (acceleration) term  : %.4f V\n', u_J);
+% fprintf('  k_eq (position) term   : %.4f V\n', u_k);
+% 
+% end
 
 function s = ternary(cond, a, b)
 if cond; s = a; else; s = b; end
-end
+

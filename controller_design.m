@@ -56,11 +56,11 @@ dddr = ref_nom.dddr;
 e_A = kjA*(1-g1)*dddr + kaA*(1-g2)*ddr + kvA*(1-g3)*dr;
 e_B = kjB*(1-g1)*dddr + kaB*(1-g2)*ddr + kvB*(1-g3)*dr;
 
-figure('Color','w','Position',[100 100 900 500]);
+figure();
 plot(t*1e3, e_A*1e3, 'LineWidth', 1.5); hold on;
 plot(t*1e3, e_B*1e3, 'LineWidth', 1.5);
-yline( emax*1e3, '--k', 'LineWidth', 1);
-yline(-emax*1e3, '--k', 'LineWidth', 1);
+yline( emax*1e3, '--r', 'LineWidth', 1);
+yline(-emax*1e3, '--r', 'LineWidth', 1);
 xline(p.spec.return_time_s*1e3, ':', 'Color', [0.5 0.5 0.5]);
 xlabel('Time [ms]');
 ylabel('Tracking error e_{LF} [mrad]');
@@ -68,33 +68,32 @@ legend('Approach A (weeding-only \omega_c)', 'Approach B (worst-case \omega_c)',
        '\pm spec (0.931 mrad)', 'Location', 'best');
 title('Deliverable (d): expected tracking error vs. spec');
 grid on;
-box on;
 
 maxAbsErrA = max(abs(e_A));
 maxAbsErrB = max(abs(e_B));
 specOkA = maxAbsErrA <= emax;
 specOkB = maxAbsErrB <= emax;
 
-fprintf('--- Deliverable d: controller design (PM=%.0f deg) ---\n', PM_deg);
-fprintf('alpha = %.4f, beta = %.1f, zeta = %.6g (from delB, d=%.6g N*m*s/rad, NOT zero), w1 = %.4f rad/s\n', ...
-    alpha, beta, zeta, d, w1);
-fprintf('emax (spec)  = %.4f mrad\n\n', emax*1e3);
-
-fprintf('Approach A (weeding-phase velocity term only, v_weeding=%.6f rad/s):\n', v_weeding);
-fprintf('  wc = %.4f rad/s (%.3f Hz)\n', wcA, wcA/(2*pi));
-fprintf('  kj=%.6g, ka=%.6g, kv=%.6g\n', kjA, kaA, kvA);
-fprintf('  max|e(t)| over FULL reference = %.4f mrad  -> %s\n\n', maxAbsErrA*1e3, ternary(specOkA,'OK','SPEC VIOLATED'));
-
-fprintf('Approach B (worst-case sum, full reference incl. return):\n');
-fprintf('  wc = %.4f rad/s (%.3f Hz)\n', wcB, wcB/(2*pi));
-fprintf('  kj=%.6g, ka=%.6g, kv=%.6g\n', kjB, kaB, kvB);
-fprintf('  max|e(t)| over FULL reference = %.4f mrad  -> %s\n', maxAbsErrB*1e3, ternary(specOkB,'OK','SPEC VIOLATED'));
-
-if ~specOkA
-    fprintf(['\nNOTE: Approach A only enforces the spec during the weeding phase by\n', ...
-             'construction; the fast return transient is NOT covered and can exceed\n', ...
-             'the +/-0.931 mrad bound, as shown in the plot and confirmed above.\n']);
-end
+% fprintf('--- Deliverable d: controller design (PM=%.0f deg) ---\n', PM_deg);
+% fprintf('alpha = %.4f, beta = %.1f, zeta = %.6g (from delB, d=%.6g N*m*s/rad, NOT zero), w1 = %.4f rad/s\n', ...
+%     alpha, beta, zeta, d, w1);
+% fprintf('emax (spec)  = %.4f mrad\n\n', emax*1e3);
+% 
+% fprintf('Approach A (weeding-phase velocity term only, v_weeding=%.6f rad/s):\n', v_weeding);
+% fprintf('  wc = %.4f rad/s (%.3f Hz)\n', wcA, wcA/(2*pi));
+% fprintf('  kj=%.6g, ka=%.6g, kv=%.6g\n', kjA, kaA, kvA);
+% fprintf('  max|e(t)| over FULL reference = %.4f mrad  -> %s\n\n', maxAbsErrA*1e3, ternary(specOkA,'OK','SPEC VIOLATED'));
+% 
+% fprintf('Approach B (worst-case sum, full reference incl. return):\n');
+% fprintf('  wc = %.4f rad/s (%.3f Hz)\n', wcB, wcB/(2*pi));
+% fprintf('  kj=%.6g, ka=%.6g, kv=%.6g\n', kjB, kaB, kvB);
+% fprintf('  max|e(t)| over FULL reference = %.4f mrad  -> %s\n', maxAbsErrB*1e3, ternary(specOkB,'OK','SPEC VIOLATED'));
+% 
+% if ~specOkA
+%     fprintf(['\nNOTE: Approach A only enforces the spec during the weeding phase by\n', ...
+%              'construction; the fast return transient is NOT covered and can exceed\n', ...
+%              'the +/-0.931 mrad bound, as shown in the plot and confirmed above.\n']);
+% end
 
 controller = struct();
 controller.PM_deg = PM_deg;

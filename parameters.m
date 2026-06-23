@@ -1,5 +1,5 @@
 function params = parameters()
-% SYSTEM_PARAMETERS  Single source of truth for all constants.
+% Loader for system parameters
 
 params = struct();
 
@@ -65,7 +65,7 @@ sensor.output_type          = '';
 sensor.mounting_radius_m    = NaN;
 params.sensor = sensor;
 
-%% Mechanism — filled during deliverable b, f
+%% Mechanism — 
 mech = struct();
 mech.J_kgm2        = NaN;
 mech.k_Nm_per_rad  = NaN;
