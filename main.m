@@ -19,3 +19,9 @@ params.mech.J_kgm2        = nominal_plant_sizing.J_kgm2;
 params.mech.k_Nm_per_rad  = nominal_plant_sizing.k_Nm_per_rad;
 params.mech.d_Nms_per_rad = nominal_plant_sizing.d_Nms_per_rad;
 
+% Define Laplace variable s
+s_var = tf('s');
+
+% Nominal Continuous plant: Voltage to Mirror Angle 
+P_nom = (params.mech.r_arm_m * params.actuator.Kf_N_per_A / params.actuator.R25_ohm) / ...
+    (params.mech.J_kgm2 * s_var^2 + params.mech.d_Nms_per_rad * s_var + params.mech.k_Nm_per_rad);
