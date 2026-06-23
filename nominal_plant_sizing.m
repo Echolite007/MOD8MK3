@@ -1,5 +1,6 @@
 function nominal_size = nominal_plant_sizing(p, ref)
 
+%% Determine following parameters based on motor limits: 
 % Determine actuator arm length r_arm 
 % Determine inertia J 
 % Determine stiffness k 

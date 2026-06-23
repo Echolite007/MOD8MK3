@@ -1,4 +1,4 @@
-function ref = get_reference_peaks(vw, tw, tr, ts)
+function ref = reference(vw, tw, tr, ts)
 
 refgenName = 'ReferenceGenerator_2023a';
 harness = 'refgen_harness_tmp';
