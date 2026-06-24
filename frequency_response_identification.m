@@ -6,7 +6,7 @@ close all; clc;
 % y = simout.signals.values(:,2);   % output angle [rad]
 
 % From saved output 
-load("negative_K_sim_out.mat")
+ load("mid_amplitude_run.mat")
 
 t = simout.time;
 u = simout.signals.values(:,1);   % input voltage [V]
@@ -120,7 +120,7 @@ valid = abs(uf(:)) > 0.05*max(abs(uf));
 % Optional: restrict to useful band
 valid = valid & f >= 0.5 & f <= 120;
 
-Hm_frd_smooth = frd(Hm_smooth(valid), 2*pi*f(valid), Ts);
+Hm_frd_smooth = frd(Hm_smooth(valid), 2*pi*f(valid), ts);
 
 save('Hm_frd_deliverable_P_smooth.mat','Hm_frd_smooth');
 
