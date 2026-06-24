@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'frequency_response'.
  *
- * Model version                  : 13.4
+ * Model version                  : 13.6
  * Simulink Coder version         : 26.1 (R2026a) 20-Nov-2025
- * C/C++ source code generated on : Wed Jun 24 11:42:12 2026
+ * C/C++ source code generated on : Wed Jun 24 14:09:17 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->C2000

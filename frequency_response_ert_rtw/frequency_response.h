@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'frequency_response'.
  *
- * Model version                  : 13.4
+ * Model version                  : 13.6
  * Simulink Coder version         : 26.1 (R2026a) 20-Nov-2025
- * C/C++ source code generated on : Wed Jun 24 11:42:12 2026
+ * C/C++ source code generated on : Wed Jun 24 14:09:17 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->C2000
@@ -78,13 +78,12 @@ extern void initBoardEnd(void);
 
 /* Block signals (default storage) */
 typedef struct {
-  real_T incrementstomcalculateyourself;
-                                /* '<S3>/increments to m(calculate yourself)' */
   real_T Gain;                         /* '<S1>/Gain' */
   real_T K_sign;                       /* '<Root>/K_sign' */
+  real_T incrementstomcalculateyourself;
+                                /* '<S3>/increments to m(calculate yourself)' */
   real_T TmpSignalConversionAt_asyncqueu[2];
   /* '<Root>/TmpSignal ConversionAt_asyncqueue_inserted_for_To WorkspaceInport1' */
-  real_T displtoangle;                 /* '<Root>/displ to angle' */
   int32_T Encoder;                     /* '<S3>/Encoder' */
 } B_frequency_response_T;
 
@@ -102,19 +101,7 @@ typedef struct {
   real_T lastCos_f;                    /* '<S2>/Sine Wave5' */
   struct {
     void *LoggedData;
-  } Voltage_PWORK;                     /* '<Root>/Voltage' */
-
-  struct {
-    void *LoggedData;
   } Scope_PWORK;                       /* '<S1>/Scope' */
-
-  struct {
-    void *LoggedData;
-  } SensorDisplacement_PWORK;          /* '<Root>/Sensor Displacement' */
-
-  struct {
-    void *LoggedData;
-  } Angle_PWORK;                       /* '<Root>/Angle' */
 
   int32_T systemEnable;                /* '<S2>/Sine Wave1' */
   int32_T systemEnable_i;              /* '<S2>/Sine Wave2' */
@@ -152,9 +139,6 @@ struct P_frequency_response_T_ {
                                         *   '<S2>/Sine Wave4'
                                         *   '<S2>/Sine Wave5'
                                         */
-  real_T incrementstomcalculateyourself_;/* Expression: 2.441406e-7
-                                          * Referenced by: '<S3>/increments to m(calculate yourself)'
-                                          */
   real_T SineWave1_Amp;                /* Expression: 0.1
                                         * Referenced by: '<S2>/Sine Wave1'
                                         */
@@ -263,6 +247,12 @@ struct P_frequency_response_T_ {
   real_T Gain_Gain;                    /* Expression: 0.3
                                         * Referenced by: '<S1>/Gain'
                                         */
+  real_T incrementstomcalculateyourself_;/* Expression: 2.441406e-7
+                                          * Referenced by: '<S3>/increments to m(calculate yourself)'
+                                          */
+  real_T Constant_Value;               /* Expression: 64000/2^5
+                                        * Referenced by: '<S3>/Constant'
+                                        */
   real_T ProtectionMax64512VDonotchange_;/* Expression: 6.4512
                                           * Referenced by: '<S3>/Protection Max 6.4512V Do not change!'
                                           */
@@ -284,17 +274,11 @@ struct P_frequency_response_T_ {
   real_T Constant4_Value;              /* Expression: 74
                                         * Referenced by: '<S3>/Constant4'
                                         */
-  real_T Constant_Value;               /* Expression: 64000/2^5
-                                        * Referenced by: '<S3>/Constant'
-                                        */
   real_T Constant3_Value;              /* Expression: 0
                                         * Referenced by: '<S3>/Constant3'
                                         */
   real_T Constant1_Value;              /* Expression: 26
                                         * Referenced by: '<S3>/Constant1'
-                                        */
-  real_T displtoangle_Gain;            /* Expression: 19.161126
-                                        * Referenced by: '<Root>/displ to angle'
                                         */
 };
 

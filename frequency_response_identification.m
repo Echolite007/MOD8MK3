@@ -1,13 +1,6 @@
 close all; clc;
 
 %% Extract data
-% t = simout.time;
-% u = simout.signals.values(:,1);   % input voltage [V]
-% y = simout.signals.values(:,2);   % output angle [rad]
-
-% From saved output 
- load("mid_amplitude_run.mat")
-
 t = simout.time;
 u = simout.signals.values(:,1);   % input voltage [V]
 y = simout.signals.values(:,2);   % output angle [rad]
@@ -18,7 +11,6 @@ u = u(2:end);
 y = y(2:end);
 
 %% Select signal type
-% Use same convention as initialization:
 % inputType = 0 -> multisine
 % inputType = 1 -> chirp
 if ~exist('inputType','var')
@@ -29,6 +21,13 @@ end
 %% Basic frequency settings
 fs = 1/ts;             % sampling frequency [Hz]
 fNyq = fs/2;           % Nyquist frequency [Hz]
+
+%% Processing settings
+averageBlockSize = 100;  % Use 5-10. Larger = smoother, lower frequency resolution.
+fMinUseful = 0.5;      % [Hz]
+fMaxUseful = 120;      % [Hz]
+inputThresholdRaw = 0.01;     % for raw FRF point selection
+inputThresholdSmooth = 0.05;  % for smoothed FRF point selection
 
 %% Process data
 if inputType == 0
@@ -66,17 +65,17 @@ if inputType == 0
     title('Measured angle per period');
 
     % Choose periods after transients
-    % Default: use second half of periods
     chosenPeriods = ceil(Nr/2):Nr;
 
     ur = mean(ur_all(:,chosenPeriods),2);
     yr = mean(yr_all(:,chosenPeriods),2);
 
+    N = length(ur);
     fResolution = 1/T;
     fgrid = (0:N-1)' * fResolution;
 
 else
-    %% Chirp processing without period averaging
+    %% Chirp processing
 
     ur = u;
     yr = y;
@@ -91,45 +90,75 @@ uf = fft(ur);
 yf = fft(yr);
 
 %% Use only positive frequencies up to Nyquist
-valid = fgrid > 0 & fgrid <= fNyq;
+validPos = fgrid > 0 & fgrid <= fNyq;
 
-fgrid_pos = fgrid(valid);
-uf_pos = uf(valid);
-yf_pos = yf(valid);
+fgrid_pos = fgrid(validPos);
+uf_pos = uf(validPos);
+yf_pos = yf(validPos);
 
 %% Select excited frequencies
-% Threshold removes frequencies where input is almost zero/noise.
-threshold = 0.01 * max(abs(uf_pos));
+threshold = inputThresholdRaw * max(abs(uf_pos));
 ind = abs(uf_pos) > threshold;
 
 f_meas = fgrid_pos(ind);
-Hm = -yf_pos(ind) ./ uf_pos(ind);
+Hm = -yf_pos(ind) ./ uf_pos(ind);   % measured FRF: angle / voltage
 
-% Frequency vector in Hz
-f = fgrid(:);
-
-% Smooth real and imaginary parts of FRF
-Hm_real_s = smoothdata(real(Hm(:)), 'movmedian', 9);
-Hm_imag_s = smoothdata(imag(Hm(:)), 'movmedian', 9);
-
-Hm_smooth = Hm_real_s + 1i*Hm_imag_s;
-
-% Optional: only keep frequencies with sufficient input excitation
-valid = abs(uf(:)) > 0.05*max(abs(uf));
-
-% Optional: restrict to useful band
-valid = valid & f >= 0.5 & f <= 120;
-
-Hm_frd_smooth = frd(Hm_smooth(valid), 2*pi*f(valid), ts);
-
-save('Hm_frd_deliverable_P_smooth.mat','Hm_frd_smooth');
-
-%% Create FRD object
+%% Raw FRD object
 Hm_frd = frd(Hm, 2*pi*f_meas);
 
-%% Save result
-save('Hm_frd_deliverable_P.mat','Hm_frd','f_meas','Hm','ts','T','inputType');
+%% Chirp noise reduction by block averaging
+if inputType == 1
 
+    % Restrict to useful frequency band before averaging
+    useful = f_meas >= fMinUseful & f_meas <= fMaxUseful;
+
+    f_for_avg = f_meas(useful);
+    Hm_for_avg = Hm(useful);
+
+    % Remove any leftover points that do not fit into complete blocks
+    nBlocks = floor(length(f_for_avg)/averageBlockSize);
+    nUse = nBlocks * averageBlockSize;
+
+    f_for_avg = f_for_avg(1:nUse);
+    Hm_for_avg = Hm_for_avg(1:nUse);
+
+    % Reshape into blocks of 5-10 frequency points
+    f_blocks = reshape(f_for_avg, averageBlockSize, []);
+    Hm_blocks = reshape(Hm_for_avg, averageBlockSize, []);
+
+    % Average frequency and complex FRF inside each block
+    f_smooth = mean(f_blocks, 1).';
+    Hm_smooth = mean(Hm_blocks, 1).';
+
+else
+
+    % For multisine, do not average neighbouring frequencies
+    f_smooth = f_meas;
+    Hm_smooth = Hm;
+
+    useful = f_smooth >= fMinUseful & f_smooth <= fMaxUseful;
+    f_smooth = f_smooth(useful);
+    Hm_smooth = Hm_smooth(useful);
+
+end
+
+%% Optional extra median smoothing after block averaging
+Hm_real_s = smoothdata(real(Hm_smooth(:)), 'movmedian', 3);
+Hm_imag_s = smoothdata(imag(Hm_smooth(:)), 'movmedian', 3);
+Hm_smooth = Hm_real_s + 1i*Hm_imag_s;
+
+%% Smoothed FRD object
+Hm_frd_smooth = frd(Hm_smooth, 2*pi*f_smooth, ts);
+
+%% Save results
+save('Hm_frd_deliverable_P.mat', ...
+     'Hm_frd','f_meas','Hm','ts','T','inputType');
+
+save('Hm_frd_deliverable_P_smooth.mat', ...
+     'Hm_frd_smooth','f_smooth','Hm_smooth','ts','T','inputType', ...
+     'averageBlockSize');
+
+%% Plot raw and smoothed Bode
 figure;
 opts = bodeoptions;
 opts.FreqUnits = 'Hz';
@@ -137,7 +166,8 @@ opts.PhaseWrapping = 'on';
 
 bodeplot(Hm_frd, Hm_frd_smooth, opts);
 grid on;
-legend('Raw measured FRF','Smoothed measured FRF');
+legend('Raw measured FRF','Block-averaged FRF');
+title('Measured frequency response: raw vs block-averaged');
 
 %% Plot FFT magnitudes
 figure;
@@ -162,13 +192,13 @@ opts.FreqUnits = 'Hz';
 opts.XLim = [min(f_meas) max(f_meas)];
 opts.PhaseWrapping = 'off';
 
-bodeplot(Hm_frd,'r.',opts);
+bodeplot(Hm_frd_smooth,'r.',opts);
 grid on
 title('Measured frequency response: angle / voltage');
 
 %% Optional: overlay model if available
-% Define your model as He before running this section, for example:
 He = spacar_sim_out.plant_voltage_to_sensor_em;
+
 if exist('He','var') && ~isempty(He)
     hold on
     bodeplot(He,opts);
@@ -179,11 +209,12 @@ end
 
 %% Print summary
 fprintf('\nDeliverable P identification complete.\n');
-fprintf('Sample time ts      = %.6g s\n', ts);
-fprintf('Sampling frequency  = %.3f Hz\n', fs);
-fprintf('Nyquist frequency   = %.3f Hz\n', fNyq);
-fprintf('Frequency resolution = %.3f Hz\n', fResolution);
-fprintf('Number of FRF points = %d\n', length(f_meas));
+fprintf('Sample time ts          = %.6g s\n', ts);
+fprintf('Sampling frequency      = %.3f Hz\n', fs);
+fprintf('Nyquist frequency       = %.3f Hz\n', fNyq);
+fprintf('Frequency resolution    = %.3f Hz\n', fResolution);
+fprintf('Raw FRF points          = %d\n', length(f_meas));
+fprintf('Smoothed FRF points     = %d\n', length(f_smooth));
+fprintf('Averaging block size    = %d points\n', averageBlockSize);
 fprintf('Saved file: Hm_frd_deliverable_P.mat\n');
-
-
+fprintf('Saved file: Hm_frd_deliverable_P_smooth.mat\n');

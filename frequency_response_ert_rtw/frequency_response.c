@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'frequency_response'.
  *
- * Model version                  : 13.4
+ * Model version                  : 13.6
  * Simulink Coder version         : 26.1 (R2026a) 20-Nov-2025
- * C/C++ source code generated on : Wed Jun 24 11:42:12 2026
+ * C/C++ source code generated on : Wed Jun 24 14:09:17 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->C2000
@@ -40,18 +40,6 @@ void frequency_response_step(void)
   real_T Fres;
   real_T b_f_start;
   real_T b_time;
-
-  /* S-Function (c280xqep): '<S3>/Encoder' */
-  {
-    frequency_response_B.Encoder = EQep2Regs.QPOSCNT;/*eQEP Position Counter*/
-  }
-
-  /* Gain: '<S3>/increments to m(calculate yourself)' incorporates:
-   *  DataTypeConversion: '<S3>/Data Type Conversion'
-   */
-  frequency_response_B.incrementstomcalculateyourself =
-    frequency_response_P.incrementstomcalculateyourself_ * (real_T)
-    frequency_response_B.Encoder;
 
   /* Sin: '<S2>/Sine Wave1' */
   if (frequency_response_DW.systemEnable != 0L) {
@@ -110,7 +98,7 @@ void frequency_response_step(void)
   /* Gain: '<S1>/Gain' incorporates:
    *  MATLAB Function: '<S1>/ChirpGenerator'
    */
-  frequency_response_B.Gain = sin(((floor(frequency_response_P.f_end *
+  frequency_response_B.Gain = sin(log10((floor(frequency_response_P.f_end *
     frequency_response_P.T) * Fres - b_f_start) / frequency_response_P.T *
     b_time / 2.0 + b_f_start) * 2.0 * 3.141592653589793 * b_time) *
     frequency_response_P.Gain_Gain;
@@ -191,6 +179,18 @@ void frequency_response_step(void)
   frequency_response_B.K_sign = frequency_response_P.GainU * Fres *
     frequency_response_P.K_sign;
 
+  /* S-Function (c280xqep): '<S3>/Encoder' */
+  {
+    frequency_response_B.Encoder = EQep2Regs.QPOSCNT;/*eQEP Position Counter*/
+  }
+
+  /* Gain: '<S3>/increments to m(calculate yourself)' incorporates:
+   *  DataTypeConversion: '<S3>/Data Type Conversion'
+   */
+  frequency_response_B.incrementstomcalculateyourself =
+    frequency_response_P.incrementstomcalculateyourself_ * (real_T)
+    frequency_response_B.Encoder;
+
   /* SignalConversion generated from: '<Root>/To Workspace' */
   frequency_response_B.TmpSignalConversionAt_asyncqueu[0] =
     frequency_response_B.K_sign;
@@ -254,10 +254,6 @@ void frequency_response_step(void)
     EPwm5Regs.CMPA.bit.CMPA = (uint16_T)((uint32_T)EPwm5Regs.TBPRD * (Fres +
       frequency_response_P.Constant1_Value) * 0.01);
   }
-
-  /* Gain: '<Root>/displ to angle' */
-  frequency_response_B.displtoangle = frequency_response_P.displtoangle_Gain *
-    frequency_response_B.incrementstomcalculateyourself;
 
   /* Update for Sin: '<S2>/Sine Wave1' */
   Fres = frequency_response_DW.lastSin;
@@ -324,10 +320,10 @@ void frequency_response_initialize(void)
   rtmSetTFinal(frequency_response_M, 500.0);
 
   /* External mode info */
-  frequency_response_M->Sizes.checksums[0] = (439431260U);
-  frequency_response_M->Sizes.checksums[1] = (2076419083U);
-  frequency_response_M->Sizes.checksums[2] = (2008336259U);
-  frequency_response_M->Sizes.checksums[3] = (1014003825U);
+  frequency_response_M->Sizes.checksums[0] = (440653099U);
+  frequency_response_M->Sizes.checksums[1] = (1709738818U);
+  frequency_response_M->Sizes.checksums[2] = (3954604693U);
+  frequency_response_M->Sizes.checksums[3] = (3772943448U);
 
   {
     static const sysRanDType rtAlwaysEnabled = SUBSYS_RAN_BC_ENABLE;

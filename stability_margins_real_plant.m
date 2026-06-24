@@ -200,6 +200,10 @@ Hm_frd_smooth.Ts = Ts;
 P = Hm_frd_smooth;
 C_old = discretized_system.Cz_retuned;
 
+L_old = P * C_old;
+
+[Gm_old, Pm_old, Wcg_old, Wcp_old] = margin(L_old);
+
 % Targets
 fc_target = 100;      % Hz
 PM_min = 30;          % deg

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'frequency_response'.
  *
- * Model version                  : 13.4
+ * Model version                  : 13.6
  * Simulink Coder version         : 26.1 (R2026a) 20-Nov-2025
- * C/C++ source code generated on : Wed Jun 24 11:42:12 2026
+ * C/C++ source code generated on : Wed Jun 24 14:09:17 2026
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: Texas Instruments->C2000
@@ -66,11 +66,6 @@ P_frequency_response_T frequency_response_P = {
     188.49555921538757, 251.32741228718345, 314.15926535897933, 439.822971502571,
     565.48667764616278, 753.98223686155029, 1005.3096491487338,
     1256.6370614359173, 1570.7963267948965 },
-
-  /* Expression: 2.441406e-7
-   * Referenced by: '<S3>/increments to m(calculate yourself)'
-   */
-  2.441406E-7,
 
   /* Expression: 0.1
    * Referenced by: '<S2>/Sine Wave1'
@@ -252,6 +247,16 @@ P_frequency_response_T frequency_response_P = {
    */
   0.3,
 
+  /* Expression: 2.441406e-7
+   * Referenced by: '<S3>/increments to m(calculate yourself)'
+   */
+  2.441406E-7,
+
+  /* Expression: 64000/2^5
+   * Referenced by: '<S3>/Constant'
+   */
+  2000.0,
+
   /* Expression: 6.4512
    * Referenced by: '<S3>/Protection Max 6.4512V Do not change!'
    */
@@ -287,11 +292,6 @@ P_frequency_response_T frequency_response_P = {
    */
   74.0,
 
-  /* Expression: 64000/2^5
-   * Referenced by: '<S3>/Constant'
-   */
-  2000.0,
-
   /* Expression: 0
    * Referenced by: '<S3>/Constant3'
    */
@@ -300,12 +300,7 @@ P_frequency_response_T frequency_response_P = {
   /* Expression: 26
    * Referenced by: '<S3>/Constant1'
    */
-  26.0,
-
-  /* Expression: 19.161126
-   * Referenced by: '<Root>/displ to angle'
-   */
-  19.161126
+  26.0
 };
 
 /*
