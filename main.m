@@ -38,3 +38,8 @@ discretized_system = discretisation(params, controller_design, spacar_sim_out);
 % Simulink parameters 
 ts = 5e-4;
 r_sensor = 0.052;
+
+[num_a, den_a] = tfdata(spacar_sim_out.plant_voltage_to_sensor_reduced, 'v');
+J_eq = abs(den_a(end-2) / num_a(end));    % s^2 coeff -- rotary inertia [kg*m^2]
+d_eq = abs(den_a(end-1) / num_a(end));    % s^1 coeff -- rotary damping [N*m*s/rad]
+k_eq = abs(den_a(end)   / num_a(end));

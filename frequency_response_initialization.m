@@ -1,25 +1,10 @@
 %% Deliverable P - Initialization Script
-% This script defines the excitation and timing settings for the
-% experimental frequency response measurement.
-%
-% Simulink model should log:
-% simout.signals.values(:,1) = actuator voltage input [V]
-% simout.signals.values(:,2) = measured mirror angle [rad]
-
 clear; clc; close all;
 
-%% ---------------- Safety / hardware limits ----------------
 
-% Effective VCM voltage limit [V]
-% Keep this consistent with the Protection block in Simulink.
 Umax = 6.4512;          % [V]
-
-% Excitation amplitude scaling.
-% Start small for hardware safety. Increase only if the sensor signal is too noisy.
 GainU = 0.2;           % [-] recommended first test: 0.05 to 0.10
 
-% Sign convention.
-% Use +1 unless your measured angle has the opposite sign from the input.
 K_sign = 1;             % [-]
 
 %% ---------------- Excitation type ----------------
@@ -47,16 +32,6 @@ Nr = 10;                % [-]
 % Total experiment duration.
 Ttot = Nr*T;            % [s]
 
-%% ---------------- Multisine settings ----------------
-
-% Frequencies for multisine excitation.
-% These are in rad/s because the Simulink multisine block usually expects rad/s.
-%
-% Choose frequencies below Nyquist:
-% f_Nyq = 1/(2*ts)
-%
-% For ts = 0.001 s, f_Nyq = 500 Hz.
-% Do not excite exactly at Nyquist.
 multisineFrequencies_Hz = [0.5 1 2 3 5 7 9 12 15 17 20 25 30 40 50 70 90 120 160 200 250];
 
 multisineFrequencies = 2*pi*multisineFrequencies_Hz;   % [rad/s]

@@ -1,8 +1,3 @@
-%% Deliverable P - Frequency Response Identification
-% Assumes:
-% simout.signals.values(:,1) = actuator voltage input [V]
-% simout.signals.values(:,2) = measured mirror angle [rad]
-
 close all; clc;
 
 %% Checks
@@ -149,13 +144,9 @@ bodeplot(Hm_frd,'r.',opts);
 grid on
 title('Measured frequency response: angle / voltage');
 
-load('simulated_TF.mat')
-
-He = delGHI.sysem;
-
 %% Optional: overlay model if available
 % Define your model as He before running this section, for example:
-% He = sys_voltage_to_angle;
+He = spacar_sim_out.plant_voltage_to_sensor_em;
 if exist('He','var') && ~isempty(He)
     hold on
     bodeplot(He,opts);
