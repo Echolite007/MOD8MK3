@@ -1,19 +1,13 @@
 close all; clc;
 
-%% Checks
-if ~exist('ts','var')
-    error('Sample time ts is not defined. Run initialization first.');
-end
-
-if ~exist('T','var')
-    error('Period time T is not defined. Run initialization first.');
-end
-
-if ~exist('simout','var')
-    error('Simulation output simout not available. Run the Simulink experiment first.');
-end
-
 %% Extract data
+% t = simout.time;
+% u = simout.signals.values(:,1);   % input voltage [V]
+% y = simout.signals.values(:,2);   % output angle [rad]
+
+% From saved output 
+load("negative_K_sim_out.mat")
+
 t = simout.time;
 u = simout.signals.values(:,1);   % input voltage [V]
 y = simout.signals.values(:,2);   % output angle [rad]
@@ -109,7 +103,7 @@ threshold = 0.01 * max(abs(uf_pos));
 ind = abs(uf_pos) > threshold;
 
 f_meas = fgrid_pos(ind);
-Hm = yf_pos(ind) ./ uf_pos(ind);
+Hm = -yf_pos(ind) ./ uf_pos(ind);
 
 %% Create FRD object
 Hm_frd = frd(Hm, 2*pi*f_meas);

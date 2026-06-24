@@ -1,5 +1,5 @@
 %% Deliverable P - Initialization Script
-clear; clc; close all;
+clc; close all;
 
 
 Umax = 6.4512;          % [V]
@@ -7,17 +7,12 @@ GainU = 0.2;           % [-] recommended first test: 0.05 to 0.10
 
 K_sign = 1;             % [-]
 
-%% ---------------- Excitation type ----------------
-
+%% Type 
 % inputType = 0 -> multisine
 % inputType = 1 -> chirp
 inputType = 1;
 
-%% ---------------- Sampling and timing ----------------
-
-% Hardware sample time.
-% 0.001 s = 1 kHz sampling.
-% If your hardware/model is configured for 2 kHz, use ts = 0.0005.
+%% Simulation properties 
 ts = 5e-4;             % [s]
 
 % Period time for multisine.
@@ -36,21 +31,16 @@ multisineFrequencies_Hz = [0.5 1 2 3 5 7 9 12 15 17 20 25 30 40 50 70 90 120 160
 
 multisineFrequencies = 2*pi*multisineFrequencies_Hz;   % [rad/s]
 
-%% ---------------- Chirp settings ----------------
+%% Chirp properties
 
 % Chirp frequency range in Hz.
-% Keep f_end safely below Nyquist.
 f_start = 0.5;          % [Hz]
 f_end   = 250;          % [Hz]
 
-%% ---------------- Optional nominal model parameters ----------------
-% These are NOT required for measuring the FRF.
-% They are only useful if you want to overlay a simple nominal model.
-%
-% Replace these with your own project values if available.
+%% Nominal parameters
 J = 0.3502;              % [kg m^2]
 b = 8.08;              % [Nms/rad]
-k = 136.31;                % [Nm/rad]
+k = 136.35;                % [Nm/rad]
 
 % Simple nominal voltage-to-angle model placeholder.
 % Only valid if the input gain from voltage to torque is included separately.
@@ -58,7 +48,7 @@ k = 136.31;                % [Nm/rad]
 s = tf('s');
 He = [];
 
-%% ---------------- Derived checks ----------------
+%% Derived check
 
 fs = 1/ts;              % [Hz]
 fNyq = fs/2;            % [Hz]
